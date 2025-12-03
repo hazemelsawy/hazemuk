@@ -215,7 +215,7 @@ const Portfolio = () => {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-            Hi, I'm <span className="text-blue-600">Hazem Elsawy</span>
+            Hi, I'm <span className="text-blue-600">Hazem</span>
           </h1>
           <h2 className="text-2xl md:text-3xl font-medium text-slate-500">
             Full Stack Developer & Growth Engineer
@@ -235,7 +235,7 @@ const Portfolio = () => {
               Contact Me
             </button>
             
-            {/* Download Resume Button - Points to /public/resume.pdf */}
+            {/* Download Resume Button - Points to /public/resume.pdf 
             <a 
               href="/resume.pdf" 
               download="Hazem_Elsawy_Resume.pdf"
@@ -248,6 +248,7 @@ const Portfolio = () => {
               <Download size={18} />
               Download Resume
             </a>
+            */}
           </div>
 
           <div className="flex items-center gap-6 pt-4 text-slate-500">
@@ -492,7 +493,7 @@ const Portfolio = () => {
 
       {/* Footer */}
       <footer className={`py-8 text-center text-sm ${darkMode ? 'bg-slate-950 text-slate-600' : 'bg-slate-50 text-slate-400'}`}>
-        <p>© {new Date().getFullYear()} Hazem Elsawy. Built with React & Tailwind.</p>
+        <p>© {new Date().getFullYear()} Hazem. Built with React & Tailwind.</p>
       </footer>
 
     </div>
