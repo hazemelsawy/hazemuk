@@ -252,8 +252,8 @@ const Portfolio = () => {
           </div>
 
           <div className="flex items-center gap-6 pt-4 text-slate-500">
-            <a href="#" className="hover:text-blue-600 transition-colors"><Github size={24} /></a>
-            <a href="#" className="hover:text-blue-600 transition-colors"><Linkedin size={24} /></a>
+            <a href="https://github.com/hazemelsawy" target="_blank" className="hover:text-blue-600 transition-colors"><Github size={24} /></a>
+            <a href="https://www.linkedin.com/in/hazemelsawy/" target="_blank"  className="hover:text-blue-600 transition-colors"><Linkedin size={24} /></a>
             <a href="mailto:hazemelsawy@outlook.com" className="hover:text-blue-600 transition-colors"><Mail size={24} /></a>
           </div>
         </div>
@@ -484,8 +484,7 @@ const Portfolio = () => {
                 <span>Perth, WA</span>
              </div>
              <div className="flex items-center gap-2">
-                <ExternalLink size={16} />
-                <a href="https://hazem.uk" className="hover:text-blue-500 underline">hazem.uk</a>
+                <span>hazem.uk</span>
              </div>
           </div>
         </div>
