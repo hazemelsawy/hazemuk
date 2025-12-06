@@ -159,7 +159,7 @@ const Portfolio = () => {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-            Hi, I'm <span className="text-blue-600">Hazem Elsawy</span>
+            Hi, I'm <span className="text-blue-600">Hazem</span>
           </h1>
           <h2 className="text-2xl md:text-3xl font-medium text-slate-500">
             Full Stack Developer & Growth Engineer
@@ -182,7 +182,7 @@ const Portfolio = () => {
             {/* Download Resume Button - Points to /public/resume.pdf 
             <a 
               href="/resume.pdf" 
-              download="Hazem_Elsawy_Resume.pdf"
+              download="Hazem__Resume.pdf"
               className={`px-6 py-3 rounded-lg font-semibold border transition-colors flex items-center gap-2 ${
                 darkMode 
                   ? 'border-slate-700 hover:bg-slate-800 text-slate-300' 
@@ -428,8 +428,7 @@ const Portfolio = () => {
                 <span>Perth, WA</span>
              </div>
              <div className="flex items-center gap-2">
-                <ExternalLink size={16} />
-                <span className="hover:text-blue-500">hazem.uk</span>
+                <span>hazem.uk</span>
              </div>
           </div>
         </div>
@@ -437,7 +436,7 @@ const Portfolio = () => {
 
       {/* Footer */}
       <footer className={`py-8 text-center text-sm ${darkMode ? 'bg-slate-950 text-slate-600' : 'bg-slate-50 text-slate-400'}`}>
-        <p>© {new Date().getFullYear()} Hazem Elsawy. Built with React & Tailwind.</p>
+        <p>© {new Date().getFullYear()} Hazem. Built with React & Tailwind.</p>
       </footer>
 
     </div>
