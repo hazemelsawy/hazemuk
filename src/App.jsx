@@ -179,7 +179,7 @@ const Portfolio = () => {
               Contact Me
             </button>
             
-            {/* Download Resume Button - Points to /public/resume.pdf */}
+            {/* Download Resume Button - Points to /public/resume.pdf 
             <a 
               href="/resume.pdf" 
               download="Hazem_Elsawy_Resume.pdf"
@@ -192,6 +192,7 @@ const Portfolio = () => {
               <Download size={18} />
               Download Resume
             </a>
+            */}
           </div>
 
           <div className="flex items-center gap-6 pt-4 text-slate-500">
@@ -428,7 +429,7 @@ const Portfolio = () => {
              </div>
              <div className="flex items-center gap-2">
                 <ExternalLink size={16} />
-                <a href="https://hazem.uk" className="hover:text-blue-500 underline">hazem.uk</a>
+                <span className="hover:text-blue-500">hazem.uk</span>
              </div>
           </div>
         </div>
