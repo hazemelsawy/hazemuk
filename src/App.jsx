@@ -20,40 +20,47 @@ import {
 } from 'lucide-react';
 
 const Portfolio = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  // FIXED: Initialize state with a function so it checks time BEFORE the first render
+  const [darkMode, setDarkMode] = useState(() => {
+    const hour = new Date().getHours();
+    return hour >= 18 || hour < 6;
+  });
+  
+  const [userOverride, setUserOverride] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Best Practice Theme Detection
   useEffect(() => {
-    // 1. Define the logic in a reusable function
     const checkTime = () => {
+      // If the user has manually changed the theme, STOP auto-switching
+      if (userOverride) return;
+
       const hour = new Date().getHours();
       // Night is between 6 PM (18) and 6 AM (6)
       const isNight = hour >= 18 || hour < 6;
       
-      // Only trigger a re-render if the value actually changes
+      // Only update if the value is different to prevent unnecessary renders
       setDarkMode(prevMode => {
         if (prevMode !== isNight) return isNight;
         return prevMode;
       });
     };
 
-    // 2. Run immediately on mount so the user doesn't see a flash of wrong theme
-    checkTime();
+    // Note: We removed the immediate checkTime() call here because 
+    // useState already handled the initial value correctly.
 
-    // 3. Set up a low-cost interval (every 60 seconds)
-    // This ensures that if the time crosses 6:00 PM while the site is open, it switches.
+    // Set up a 5-second interval to keep checking
     const intervalId = setInterval(checkTime, 5000);
 
-    // 4. CLEANUP: Crucial React Best Practice
-    // When the component unmounts, kill the timer to prevent memory leaks.
+    // Cleanup on unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [userOverride]); 
 
   // Toggle dark mode manual override
   const toggleTheme = () => {
-    setDarkMode(!darkMode);
+    setUserOverride(true); // Flag that the user has taken control
+    setDarkMode(!darkMode); // Switch the theme immediately
   };
 
   const scrollTo = (id) => {
