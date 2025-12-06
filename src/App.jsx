@@ -15,103 +15,40 @@ import {
   Sun,
   Terminal,
   Cpu,
-  Menu, // Added: Hamburger Icon
-  X     // Added: Close Icon
+  Menu,
+  X
 } from 'lucide-react';
 
 const Portfolio = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // New state for mobile menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Helper to calculate sunrise/sunset (Simplified version of NOAA algorithm)
-  const getSunTimes = (latitude, longitude) => {
-    const date = new Date();
-    const zenith = 90.8333; // Official zenith
-    const D2R = Math.PI / 180;
-    const R2D = 180 / Math.PI;
-
-    // Convert to day of year
-    const start = new Date(date.getFullYear(), 0, 0);
-    const diff = date - start;
-    const oneDay = 1000 * 60 * 60 * 24;
-    const day = Math.floor(diff / oneDay);
-
-    // Calculate the sun's approximate position
-    const lngHour = longitude / 15;
-    const t = day + ((6 - lngHour) / 24);
-    const M = (0.9856 * t) - 3.289;
-    const L = M + (1.916 * Math.sin(M * D2R)) + (0.020 * Math.sin(2 * M * D2R)) + 282.634;
-    let RA = R2D * Math.atan(0.91764 * Math.tan(L * D2R));
-    
-    // Adjust RA to be in the same quadrant as L
-    const Lquadrant = (Math.floor(L / 90)) * 90;
-    const RAquadrant = (Math.floor(RA / 90)) * 90;
-    RA = RA + (Lquadrant - RAquadrant);
-    RA = RA / 15;
-
-    const sinDec = 0.39782 * Math.sin(L * D2R);
-    const cosDec = Math.cos(Math.asin(sinDec));
-    const cosH = (Math.cos(zenith * D2R) - (sinDec * Math.sin(latitude * D2R))) / (cosDec * Math.cos(latitude * D2R));
-
-    // Sun never rises or sets at this location/date (polar regions)
-    if (cosH > 1 || cosH < -1) return null;
-
-    // Finish calculating H and convert into hours
-    const H = (360 - R2D * Math.acos(cosH)) / 15;
-    const T = H + RA - (0.06571 * t) - 6.622;
-    let UT = T - lngHour;
-    
-    // Normalize UT to 0-24 range
-    if (UT > 24) UT -= 24;
-    if (UT < 0) UT += 24;
-
-    // Convert UTC sunset to local time
-    const offset = -date.getTimezoneOffset() / 60;
-    let localSunset = UT + offset;
-    if (localSunset > 24) localSunset -= 24;
-    if (localSunset < 0) localSunset += 24;
-    
-    // Approximate sunrise (simplified based on sunset)
-    const H_rise = (R2D * Math.acos(cosH)) / 15;
-    const T_rise = H_rise + RA - (0.06571 * t) - 6.622;
-    let UT_rise = T_rise - lngHour;
-    
-    if (UT_rise > 24) UT_rise -= 24; 
-    if (UT_rise < 0) UT_rise += 24;
-    
-    let localSunrise = UT_rise + offset;
-    if (localSunrise > 24) localSunrise -= 24;
-    if (localSunrise < 0) localSunrise += 24;
-
-    return { sunrise: localSunrise, sunset: localSunset };
-  };
-
-  // Determine theme on mount based on location and time
+  // Best Practice Theme Detection
   useEffect(() => {
-    const setDayNightByLocation = (position) => {
-      const { latitude, longitude } = position.coords;
-      const sunTimes = getSunTimes(latitude, longitude);
-      const currentHour = new Date().getHours() + (new Date().getMinutes() / 60);
-
-      if (sunTimes) {
-        const isDay = currentHour >= sunTimes.sunrise && currentHour < sunTimes.sunset;
-        setDarkMode(!isDay);
-      } else {
-        fallbackTimeCheck();
-      }
-    };
-
-    const fallbackTimeCheck = () => {
+    // 1. Define the logic in a reusable function
+    const checkTime = () => {
       const hour = new Date().getHours();
-      setDarkMode(hour < 6 || hour >= 18);
+      // Night is between 6 PM (18) and 6 AM (6)
+      const isNight = hour >= 18 || hour < 6;
+      
+      // Only trigger a re-render if the value actually changes
+      setDarkMode(prevMode => {
+        if (prevMode !== isNight) return isNight;
+        return prevMode;
+      });
     };
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(setDayNightByLocation, fallbackTimeCheck);
-    } else {
-      fallbackTimeCheck();
-    }
+    // 2. Run immediately on mount so the user doesn't see a flash of wrong theme
+    checkTime();
+
+    // 3. Set up a low-cost interval (every 60 seconds)
+    // This ensures that if the time crosses 6:00 PM while the site is open, it switches.
+    const intervalId = setInterval(checkTime, 5000);
+
+    // 4. CLEANUP: Crucial React Best Practice
+    // When the component unmounts, kill the timer to prevent memory leaks.
+    return () => clearInterval(intervalId);
   }, []);
 
   // Toggle dark mode manual override
@@ -124,7 +61,7 @@ const Portfolio = () => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-    setIsMenuOpen(false); // Close menu after clicking
+    setIsMenuOpen(false);
   };
 
   return (
@@ -215,7 +152,7 @@ const Portfolio = () => {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-            Hi, I'm <span className="text-blue-600">Hazem</span>
+            Hi, I'm <span className="text-blue-600">Hazem Elsawy</span>
           </h1>
           <h2 className="text-2xl md:text-3xl font-medium text-slate-500">
             Full Stack Developer & Growth Engineer
@@ -235,7 +172,7 @@ const Portfolio = () => {
               Contact Me
             </button>
             
-            {/* Download Resume Button - Points to /public/resume.pdf 
+            {/* Download Resume Button - Points to /public/resume.pdf */}
             <a 
               href="/resume.pdf" 
               download="Hazem_Elsawy_Resume.pdf"
@@ -248,12 +185,11 @@ const Portfolio = () => {
               <Download size={18} />
               Download Resume
             </a>
-            */}
           </div>
 
           <div className="flex items-center gap-6 pt-4 text-slate-500">
-            <a href="https://github.com/hazemelsawy" target="_blank" className="hover:text-blue-600 transition-colors"><Github size={24} /></a>
-            <a href="https://www.linkedin.com/in/hazemelsawy/" target="_blank"  className="hover:text-blue-600 transition-colors"><Linkedin size={24} /></a>
+            <a href="#" className="hover:text-blue-600 transition-colors"><Github size={24} /></a>
+            <a href="#" className="hover:text-blue-600 transition-colors"><Linkedin size={24} /></a>
             <a href="mailto:hazemelsawy@outlook.com" className="hover:text-blue-600 transition-colors"><Mail size={24} /></a>
           </div>
         </div>
@@ -417,7 +353,7 @@ const Portfolio = () => {
               </div>
             </div>
 
-            {/* Timeline Item 2 */}
+            {/* Timeline Item 2 - Cleaned up (No Company Name) */}
             <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
               <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200 shadow'}`}>
                 <div className="w-3 h-3 bg-slate-400 rounded-full"></div>
@@ -437,7 +373,7 @@ const Portfolio = () => {
               </div>
             </div>
 
-             {/* Timeline Item 3 */}
+             {/* Timeline Item 3 - Cleaned up (No Company Name) */}
              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
               <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200 shadow'}`}>
                 <div className="w-3 h-3 bg-slate-400 rounded-full"></div>
@@ -484,7 +420,8 @@ const Portfolio = () => {
                 <span>Perth, WA</span>
              </div>
              <div className="flex items-center gap-2">
-                <span>hazem.uk</span>
+                <ExternalLink size={16} />
+                <a href="https://hazem.uk" className="hover:text-blue-500 underline">hazem.uk</a>
              </div>
           </div>
         </div>
@@ -492,7 +429,7 @@ const Portfolio = () => {
 
       {/* Footer */}
       <footer className={`py-8 text-center text-sm ${darkMode ? 'bg-slate-950 text-slate-600' : 'bg-slate-50 text-slate-400'}`}>
-        <p>© {new Date().getFullYear()} Hazem. Built with React & Tailwind.</p>
+        <p>© {new Date().getFullYear()} Hazem Elsawy. Built with React & Tailwind.</p>
       </footer>
 
     </div>
